@@ -1,7 +1,7 @@
-ORI_TRAIN = "/home/sphere/MonoDepth_prediction/mono/datasets/splits/eigen_full/train_files_ori.txt"
-ORI_VAL = "/home/sphere/MonoDepth_prediction/mono/datasets/splits/eigen_full/val_files_ori.txt"
-TRAIN = "/home/sphere/MonoDepth_prediction/mono/datasets/splits/eigen_full/train_files.txt"
-VAL = "/home/sphere/MonoDepth_prediction/mono/datasets/splits/eigen_full/val_files.txt"
+ORI_TRAIN = "/mono/datasets/splits/eigen_full/train_files_ori.txt"
+ORI_VAL = "/mono/datasets/splits/eigen_full/val_files_ori.txt"
+TRAIN = "/mono/datasets/splits/eigen_full/train_files.txt"
+VAL = "/mono/datasets/splits/eigen_full/val_files.txt"
 N = 15
 
 def readFile(path):
