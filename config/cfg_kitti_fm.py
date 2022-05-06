@@ -18,7 +18,7 @@ data = dict(
 )
 
 model = dict(
-    name = 'mono_fm',# select a model by name
+    name = 'autoencoder',# select a model by name
     depth_num_layers = DEPTH_LAYERS,
     pose_num_layers = POSE_LAYERS,
     frame_ids = FRAME_IDS,
@@ -37,7 +37,7 @@ model = dict(
     smoothness_weight = 1e-3,
 )
 
-# resume_from = '/node01_data5/monodepth2-test/model/ms/ms.pth'#directly start training from provide weights
+# resume_from = "results/latest.pth"
 resume_from = None
 finetune = None
 total_epochs = 60

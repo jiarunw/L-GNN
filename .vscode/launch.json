@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["--config", "./config/cfg_kitti_fm.py", "--work_dir", "results", "--launcher", "none"]
+            "args": ["--config", "./config/cfg_kitti_autoencoder.py", "--work_dir", "results", "--launcher", "none"]
         }
     ]
 }
