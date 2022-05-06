@@ -34,7 +34,7 @@ class NonDistEvalHook(Hook):
 
     def after_train_epoch(self, runner):
         print('evaluation..............................................')
-        os.system("python3.8 scripts/infer.py --epoch {}".format(runner._epoch))
+        os.system("python scripts/infer.py --epoch {}".format(runner._epoch))
         abs_rel = AverageMeter()
         sq_rel = AverageMeter()
         rmse = AverageMeter()

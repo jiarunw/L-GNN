@@ -16,7 +16,7 @@ import torch
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
     parser.add_argument('--config',
-                        default='/config/cfg_kitti_fm.py',
+                        default='config/cfg_kitti_fm.py',
                         help='train config file path')
     parser.add_argument('--work_dir',
                         default='/media/user/harddisk/weight/fmdepth',
