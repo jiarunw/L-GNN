@@ -1,0 +1,3 @@
+2011_09_26/2011_09_26_drive_0057_sync/image_02/data/0000000116.jpg 2011_09_26_drive_0057_sync/proj_depth/groundtruth/image_02/0000000116.png 721.5377
+2011_09_26/2011_09_26_drive_0032_sync/image_02/data/0000000280.jpg 2011_09_26_drive_0032_sync/proj_depth/groundtruth/image_02/0000000280.png 721.5377
+2011_09_26/2011_09_26_drive_0087_sync/image_02/data/0000000673.jpg 2011_09_26_drive_0087_sync/proj_depth/groundtruth/image_02/0000000673.png 721.5377
