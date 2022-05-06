@@ -1,6 +1,6 @@
 kitti_data/
-results/
 !results/test.jpg
+results/
 test/
 mono/datasets/splits/eigen/gt_depths.npz
 Models/
