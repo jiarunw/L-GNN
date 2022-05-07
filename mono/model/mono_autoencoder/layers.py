@@ -4,7 +4,30 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+class local_planar_guidance(nn.Module):
+    def __init__(self, upratio):
+        super(local_planar_guidance, self).__init__()
+        self.upratio = upratio
+        self.u = torch.arange(self.upratio).reshape([1, 1, self.upratio]).float()
+        self.v = torch.arange(int(self.upratio)).reshape([1, self.upratio, 1]).float()
+        self.upratio = float(upratio)
 
+    def forward(self, plane_eq, focal):
+        plane_eq_expanded = torch.repeat_interleave(plane_eq, int(self.upratio), 2)
+        plane_eq_expanded = torch.repeat_interleave(plane_eq_expanded, int(self.upratio), 3)
+        n1 = plane_eq_expanded[:, 0, :, :]
+        n2 = plane_eq_expanded[:, 1, :, :]
+        n3 = plane_eq_expanded[:, 2, :, :]
+        n4 = plane_eq_expanded[:, 3, :, :]
+        
+        u = self.u.repeat(plane_eq.size(0), plane_eq.size(2) * int(self.upratio), plane_eq.size(3)).cuda()
+        u = (u - (self.upratio - 1) * 0.5) / self.upratio
+        
+        v = self.v.repeat(plane_eq.size(0), plane_eq.size(2), plane_eq.size(3) * int(self.upratio)).cuda()
+        v = (v - (self.upratio - 1) * 0.5) / self.upratio
+
+        return n4 / (n1 * u + n2 * v + n3)
+        
 class SSIM(nn.Module):
     def __init__(self):
         super(SSIM, self).__init__()

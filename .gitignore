@@ -1,6 +1,10 @@
 kitti_data/
-results/
+results/*
 !results/test.jpg
 test/
+bts/pytorch/models/
+bts/tensorflow/
+bts/kitti_data
+bts/data_depth_annotated
 mono/datasets/splits/eigen/gt_depths.npz
 Models/

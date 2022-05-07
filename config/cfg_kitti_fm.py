@@ -37,16 +37,16 @@ model = dict(
     smoothness_weight = 1e-3,
 )
 
-# resume_from = '/node01_data5/monodepth2-test/model/ms/ms.pth'#directly start training from provide weights
+# resume_from = "results/latest.pth"
 resume_from = None
 finetune = None
-total_epochs = 15
+total_epochs = 60
 imgs_per_gpu = IMGS_PER_GPU
-learning_rate = 1e-4
+learning_rate = 1e-5
 workers_per_gpu = 1
 validate = True
 
-optimizer = dict(type='Adam', lr=learning_rate, weight_decay=0)
+optimizer = dict(type='Adam', lr=learning_rate, weight_decay=1e-5)
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 lr_config = dict(
     policy='step',

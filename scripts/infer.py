@@ -35,7 +35,7 @@ def predict(cv2_img, model):
 
     with torch.no_grad():
         input = {}
-        input['color_aug', 0, 0] = im_tensor
+        input['color', 0, 0] = im_tensor
         outputs = model(input)
     
     disp = outputs[("disp", 0, 0)]
@@ -69,13 +69,14 @@ def evaluate(cfg_path, model_path, img_path, output_path):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Infer')
-    parser.add_argument('--epoch',
-                        type=int,
-                        default=1)
-    args = parser.parse_args()
-    cfg_path = 'config/cfg_kitti_fm.py'# path to cfg file
-    model_path = 'results/epoch_{}.pth'.format(args.epoch+1)# path to model weight
+    # parser = argparse.ArgumentParser(description='Infer')
+    # parser.add_argument('--epoch',
+    #                     type=int,
+    #                     default=1)
+    # args = parser.parse_args()
+
+    cfg_path = 'config/cfg_kitti_autoencoder.py'# path to cfg file
+    model_path = 'results/epoch_3.pth'# path to model weight
     img_path = 'results/test.jpg'
-    output_path = 'results/test_disp{}.jpg'.format(args.epoch+1) # dir for saving depth maps
+    output_path = 'results/test_disp3.jpg' # dir for saving depth maps
     evaluate(cfg_path, model_path, img_path, output_path)

@@ -2,7 +2,7 @@ ORI_TRAIN = "mono/datasets/splits/eigen_full/train_files_ori.txt"
 ORI_VAL = "mono/datasets/splits/eigen_full/val_files_ori.txt"
 TRAIN = "mono/datasets/splits/eigen_full/train_files.txt"
 VAL = "mono/datasets/splits/eigen_full/val_files.txt"
-N = 15
+N = 1500
 
 def readFile(path):
     with open(path) as f:
