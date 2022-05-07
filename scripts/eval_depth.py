@@ -3,7 +3,7 @@ import cv2
 import sys
 import numpy as np
 from mmcv import Config
-
+import argparse
 import torch
 from torch.utils.data import DataLoader
 
@@ -105,11 +105,20 @@ def evaluate(MODEL_PATH, CFG_PATH, GT_PATH):
     print("Scaling ratios | med: {:0.3f} | std: {:0.3f}".format(med, np.std(ratios / med)))
     print("\n" + ("{:>}| " * 7).format("abs_rel", "sq_rel", "rmse", "rmse_log", "a1", "a2", "a3"))
     print(("&{:.3f} " * 7).format(*mean_errors.tolist()) + "\\\\")
+    # results = mean_errors.tolist()
+    with open("metrics.txt", "a") as f:
+        f.write("{:.7f} {:.7f} {:.7f} {:.7f} {:.7f} {:.7f} {:.7f}\n".format(*mean_errors.tolist()))
     print("\n-> Done!")
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='plots')
+    parser.add_argument('--epoch',
+                        type=int,
+                        default=1)
+    args = parser.parse_args()
     CFG_PATH = 'config/cfg_kitti_fm.py'#path to cfg file
-    GT_PATH = 'mono/datasets/splits/eigen/gt_depths.npz'#path to kitti gt depth
-    MODEL_PATH = 'results/epoch_6.pth'#path to model weights
+    GT_PATH = 'mono/datasets/splits/eigen_full/gt_depths.npz'#path to kitti gt depth
+    # MODEL_PATH = 'results/epoch_{}.pth'.format(args.epoch)#path to model weights
+    MODEL_PATH = 'results/new.pth'
     evaluate(MODEL_PATH, CFG_PATH, GT_PATH)

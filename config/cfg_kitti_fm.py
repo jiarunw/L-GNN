@@ -18,7 +18,7 @@ data = dict(
 )
 
 model = dict(
-    name = 'autoencoder',# select a model by name
+    name = 'mono_fm',# select a model by name
     depth_num_layers = DEPTH_LAYERS,
     pose_num_layers = POSE_LAYERS,
     frame_ids = FRAME_IDS,
