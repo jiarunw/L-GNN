@@ -1,58 +1,8 @@
-#!/usr/bin/env python 
-# -*- coding:utf-8 -*-
-# Author: Armin Masoumian (masoumian.armin@gmail.com)
-
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .layers import Conv1x1, Conv3x3, CRPBlock, upsample
-from .layers import GraphConvolution, GCN
-import math
-import scipy.sparse as sp
-import numpy as np
-import networkx as nx
-import pandas as pd
-from scipy.sparse import identity
-from scipy.linalg import fractional_matrix_power
-import numpy as np
 
-
-# def normalize(x):
-#     rowsum = np.array(x.sum(1))
-#     r_inv = np.power(rowsum, -1).flatten()
-#     r_inv[np.isinf(r_inv)] = 0.
-#     r_mat_inv = sp.diags(r_inv)
-#     x = r_mat_inv.dot(x)
-#     return x
-#
-
-
-def normalize(adj):
-    degree_array = np.sum(adj, 1)
-    try:
-        degree_array = degree_array.A1
-    except:
-        pass
-    degree_matrix = np.diag(degree_array)
-    degree_matrix = fractional_matrix_power(degree_matrix, 0.5)
-    degree_matrix = np.linalg.inv(degree_matrix)
-    laplacian = np.identity(adj.shape[0]) - np.matmul(np.matmul(degree_matrix, adj), degree_matrix)
-    return laplacian
-
-
-nfeat = 256
-nhid = 320
-nhid2 = 1280
-p = 0.7
-nclass = 1
-
-G = nx.generators.random_graphs.gnp_random_graph(nhid,p)
-adj = nx.adjacency_matrix(G)
-xx = identity(320).toarray();
-# adj = normalize(adj + xx)
-adj = normalize(adj)
-adj = torch.from_numpy(adj).float().to('cuda:0')
 
 class DepthDecoder(nn.Module):
     def __init__(self,  num_ch_enc):
@@ -88,13 +38,6 @@ class DepthDecoder(nn.Module):
         self.disp2 = nn.Sequential(Conv3x3(bottleneck, 1), nn.Sigmoid())
         self.disp1 = nn.Sequential(Conv3x3(bottleneck, 1), nn.Sigmoid())
 
-        # GCN
-        self.gc1 = GraphConvolution(nfeat, nhid)
-        self.gc2 = GraphConvolution(nhid, nclass)
-        self.gc3 = GraphConvolution(nfeat, nhid2)
-        self.gc4 = GraphConvolution(nhid2, nclass)
-
-
     def _make_crp(self, in_planes, out_planes, stages):
         layers = [CRPBlock(in_planes, out_planes,stages)]
         return nn.Sequential(*layers)
@@ -102,32 +45,19 @@ class DepthDecoder(nn.Module):
     def forward(self, input_features, frame_id=0):
         self.outputs = {}
         l0, l1, l2, l3, l4 = input_features
+
         l4 = self.do(l4)
         l3 = self.do(l3)
+
         x4 = self.reduce4(l4)
         x4 = self.iconv4(x4)
         x4 = F.leaky_relu(x4)
         x4 = self.crp4(x4)
         x4 = self.merge4(x4)
         x4 = F.leaky_relu(x4)
-        y4 = x4.view(10*32,-1)
-        y4 = self.gc1(y4, adj)
-        y3 = self.gc2(y4, adj)
-        y4 = y3.view(1, 1, 10, 32)
-        y4 = self.do(y4)
-        disp4 = upsample(y4)
         x4 = upsample(x4)
+        disp4 = self.disp4(x4)
 
- 
-        z3 = torch.transpose(y3, 0, 1)
-        yy = torch.matmul(y3, z3)
-        yy = yy.cpu()
-        yy = yy.detach().numpy()
-        yy = normalize(yy)
-        yy = torch.from_numpy(yy).float().to('cuda:0')
-        yy = yy.view(1, 1, 320, 320)
-        yy = F.interpolate(yy, scale_factor=4, mode="nearest")
-        yy = yy.view(1280,-1)
 
         x3 = self.reduce3(l3)
         x3 = torch.cat((x3, x4, disp4), 1)
@@ -136,13 +66,8 @@ class DepthDecoder(nn.Module):
         x3 = self.crp3(x3)
         x3 = self.merge3(x3)
         x3 = F.leaky_relu(x3)
-        y5 = x3.view(20*64,-1)
-        y5 = self.gc3(y5, yy)
-        y5 = self.gc4(y5, yy)
-        y5 = y5.view(1, 1, 20, 64)
-        y5 = self.do(y5)
-        disp3 = upsample(y5)
         x3 = upsample(x3)
+        disp3 = self.disp3(x3)
 
 
         x2 = self.reduce2(l2)
@@ -154,7 +79,6 @@ class DepthDecoder(nn.Module):
         x2 = F.leaky_relu(x2)
         x2 = upsample(x2)
         disp2 = self.disp2(x2)
-
 
         x1 = self.reduce1(l1)
         x1 = torch.cat((x1, x2, disp2), 1)
